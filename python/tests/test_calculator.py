@@ -8,10 +8,11 @@ class TestCongestionTaxCalculator(unittest.TestCase):
     def setUp(self):
         self.CongestionTaxCalculator = CongestionTaxCalculator()
 
+    # Passes with vehicle that should not pay toll
     def test_case_toll_free_vehicle(self):
         self._run_test_case(Motorbike, ["2013-01-14 21:00:00"], 0)
 
-    # Single time should give 0 as score
+    # Passes with a single date, give an easy to calculate score
     def test_case_single_passes(self):
         self._run_test_case(Car, ["2013-01-14 21:00:00"], 0)
         self._run_test_case(Car, ["2013-01-15 21:00:00"], 0)
