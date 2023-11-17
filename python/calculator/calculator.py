@@ -9,33 +9,53 @@ class CongestionTaxCalculator:
 
     # Calculate the total tax for a single vehicle in a list of dates
     def get_tax(self, vehicle: Vehicle, dates: list):
+
+        # We need to sort the dates first to make sure our algorithm works correctly
         dates.sort()
 
+        # We collect the fee per day in a dict
+        total_fee = defaultdict(int)
+
+        # Initial values for our loop
         start_date = dates[0]
         previous_date = dates[0]
-        total_fee = defaultdict(int)
+
         for date in dates:
 
             # We need to keep track of the total fee for each day, not the total
-            # fee for all days, since we can span over multiple days.
+            # fee for all days, since our input can span over multiple days.
             day = date.strftime("%Y-%m-%d")
+
+            # Calculate the fee for the current date
             next_fee = self.get_toll_fee(vehicle, date)
             temp_fee = self.get_toll_fee(vehicle, previous_date)
 
             minutes = (date.timestamp() - start_date.timestamp()) / 60
+
             if minutes <= 60:
+
+                # If we already have a fee for this day, we need to subtract the previous fee.
                 if total_fee[day] > 0:
                     total_fee[day] -= temp_fee
+
+                # If the next fee is higher than the previous fee, we need to use the next fee instead.
                 if next_fee >= temp_fee:
                     temp_fee = next_fee
+
+                # Add the fee to the total fee for this day
                 total_fee[day] += temp_fee
+
+            # If there was more than 60 mintes between the previous date and the current date,
+            # we simply add this fee to the rest of the fee for this day.
             else:
                 total_fee[day] += next_fee
                 start_date = date
 
+            # Save the current date as the new previous one and iterate through the loop
             previous_date = date
             total_fee[day] = min(total_fee[day], 60)
 
+        # The total fee for all the dates is the sum of the feeds for every day we encountered
         return reduce(lambda a, b: a+b, total_fee.values())
 
     def get_toll_fee(self, vehicle: Vehicle, date: datetime, ) -> int:
