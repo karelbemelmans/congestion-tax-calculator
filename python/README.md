@@ -1,6 +1,6 @@
 ## How to run this code?
 
-Optiona: Setup a python virtual environment:
+Setup a python virtual environment:
 
 ```sh
 python3 -m venv .venv
