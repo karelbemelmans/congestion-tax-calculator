@@ -34,14 +34,7 @@ class CongestionTaxCalculator:
         return total_fee
 
     # Comment
-    def is_toll_free_vehicle(self, vehicle: Vehicle) -> bool:
-        if vehicle == None:
-            return False
 
-        vehicle_type = vehicle.get_vehicle_type(vehicle)
-        return vehicle_type in [toll_free_vehicle.name.capitalize() for toll_free_vehicle in TollFreeVehicles]
-
-    # Comment
     def get_toll_fee(self, vehicle: Vehicle, date: datetime, ) -> int:
         if self.is_toll_free_date(date):
             return 0
