@@ -12,6 +12,40 @@ class TestCongestionTaxCalculator(unittest.TestCase):
     def test_case_toll_free_vehicle(self):
         self._run_test_case(Motorbike, ["2013-01-14 21:00:00"], 0)
 
+    def test_saturday_is_free(self):
+        self._run_test_case(Car, ["2013-04-13 13:30:00"], 0)
+
+    def test_sunday_is_free(self):
+        self._run_test_case(Car, ["2013-04-13 13:30:00"], 0)
+
+    def test_christmas_day_is_free(self):
+        self._run_test_case(Car, ["2013-12-25 13:30:00"], 0)
+
+    def test_a_day_in_july(self):
+        self._run_test_case(Car, ["2013-07-07 13:30:00"], 0)
+
+    def test_two_passages_within_60_minutes(self):
+        self._run_test_case(
+            Car, [
+                "2013-02-08 14:35:00",  # 8sek
+                "2013-02-08 15:29:00"   # 13sek
+            ], 13)
+
+    def test_three_passages_within_60_minutes(self):
+        self._run_test_case(
+            Car, [
+                "2013-02-08 15:29:00",  # 13sek
+                "2013-02-08 15:47:00",  # 18sek
+                "2013-02-08 16:01:00"   # 18sek
+            ], 18)
+
+    def test_two_passages_further_than_60_minutes(self):
+        self._run_test_case(
+            Car, [
+                "2013-02-08 06:23:00",  # 8sek
+                "2013-02-08 15:27:00"   # 13sek
+            ], 8 + 13)
+
     # Passes with a single date, give an easy to calculate score
     def test_case_single_passes(self):
         self._run_test_case(Car, ["2013-01-14 21:00:00"], 0)
@@ -37,9 +71,21 @@ class TestCongestionTaxCalculator(unittest.TestCase):
         self._run_test_case(Car, ["2013-02-08 18:35:00"], 0)
         self._run_test_case(Car, ["2013-03-28 14:07:27"], 0)
 
-    def test_two_passes_in_one_day(self):
+    def test_maximum_tax_is_60_per_day(self):
         self._run_test_case(
-            Car, ["2013-01-14 21:00:00", "2013-01-15 21:00:00"], 0)
+            Car, [
+                "2013-02-08 06:27:00",  # Friday - 8
+                "2013-02-08 07:37:00",  # Friday - 18
+                "2013-02-08 08:47:00",  # Friday - 8
+                "2013-02-08 09:57:00",  # Friday - 8
+                "2013-02-08 11:07:00",  # Friday - 8
+                "2013-02-08 12:17:00",  # Friday - 8
+                "2013-02-08 13:27:00",  # Friday - 8
+                "2013-02-08 14:37:00",  # Friday - 8
+                "2013-02-08 15:47:00",  # Friday - 18
+                "2013-02-08 16:57:00",  # Friday - 18
+                "2013-02-08 18:07:00"   # Friday - 8
+            ], 60)
 
     # Ole's example that should not be 0
     def test_cars_arent_free_to_pass(self):
