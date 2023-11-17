@@ -1,39 +1,42 @@
 from datetime import datetime
 from enum import Enum
 from calculator.vehicles import Vehicle
+from collections import deque, defaultdict
+from functools import reduce
 
 
 class CongestionTaxCalculator:
 
     # Calculate the total tax for a single vehicle in a list of dates
-    # We expect the dates to be sorted before passing into this function
     def get_tax(self, vehicle: Vehicle, dates: list):
+        dates.sort()
 
-        interval_start = dates[0]
-        total_fee = 0
-
+        start_date = dates[0]
+        previous_date = dates[0]
+        total_fee = defaultdict(int)
         for date in dates:
-            print("date checked:", date)
+
+            # We need to keep track of the total fee for each day, not the total
+            # fee for all days, since we can span over multiple days.
+            day = date.strftime("%Y-%m-%d")
             next_fee = self.get_toll_fee(vehicle, date)
-            temp_fee = self.get_toll_fee(vehicle, interval_start)
+            temp_fee = self.get_toll_fee(vehicle, previous_date)
 
-            diff_in_seconds = date.timestamp() - interval_start.timestamp()
-            minutes = diff_in_seconds / 60
-
+            minutes = (date.timestamp() - start_date.timestamp()) / 60
             if minutes <= 60:
-                if total_fee > 0:
-                    total_fee = total_fee - temp_fee
+                if total_fee[day] > 0:
+                    total_fee[day] -= temp_fee
                 if next_fee >= temp_fee:
                     temp_fee = next_fee
-                total_fee = total_fee + temp_fee
+                total_fee[day] += temp_fee
             else:
-                total_fee = total_fee + next_fee
+                total_fee[day] += next_fee
+                start_date = date
 
-        # We can never pay more than 60kr per day
-        print("FEE:", total_fee)
-        return total_fee
+            previous_date = date
+            total_fee[day] = min(total_fee[day], 60)
 
-    # Comment
+        return reduce(lambda a, b: a+b, total_fee.values())
 
     def get_toll_fee(self, vehicle: Vehicle, date: datetime, ) -> int:
         if self.is_toll_free_date(date):
@@ -71,6 +74,9 @@ class CongestionTaxCalculator:
         month = date.month
         day = date.day
 
+        if not year == 2013:
+            return False
+
         # Saturday and Sunday
         if date.weekday() == 5 or date.weekday() == 6:
             return True
@@ -87,7 +93,4 @@ class CongestionTaxCalculator:
             12: [24, 25, 26, 31]
         }
 
-        if year == 2013:
-            if month in toll_free_days and day in toll_free_days[month]:
-                return True
-        return False
+        return month in toll_free_days and day in toll_free_days[month]

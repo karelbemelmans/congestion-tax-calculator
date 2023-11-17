@@ -40,6 +40,14 @@ class TestCongestionTaxCalculator(unittest.TestCase):
         self._run_test_case(
             Car, ["2013-01-14 21:00:00", "2013-01-15 21:00:00"], 0)
 
+    # Ole's example that should not be 0
+    def test_cars_arent_free_to_pass(self):
+        self._run_test_case(Car, ["2013-02-08 09:01:00",
+                                  "2013-02-08 10:02:00",
+                                  "2013-02-08 11:03:00",
+                                  "2013-02-08 12:04:00",
+                                  "2013-02-08 14:05:00"], 40)
+
     # Internal helper method that converts our string input to datetime objects
     def _run_test_case(self, vehicle, dates, expected):
         result = self.CongestionTaxCalculator.get_tax(
