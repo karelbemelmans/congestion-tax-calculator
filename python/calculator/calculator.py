@@ -1,14 +1,13 @@
 from datetime import datetime
-from enum import Enum
 from calculator.vehicles import Vehicle
-from collections import deque, defaultdict
+from collections import defaultdict
 from functools import reduce
 
 
 class CongestionTaxCalculator:
 
-    # Calculate the total tax for a single vehicle in a list of dates
     def get_tax(self, vehicle: Vehicle, dates: list):
+        """Returns the total toll fee for a vehicle on a list of dates."""
 
         # We need to sort the dates first to make sure our algorithm works correctly
         dates.sort()
@@ -59,6 +58,8 @@ class CongestionTaxCalculator:
         return reduce(lambda a, b: a+b, total_fee.values())
 
     def get_toll_fee(self, vehicle: Vehicle, date: datetime, ) -> int:
+        """Returns the toll fee for a single date."""
+
         if self.is_toll_free_date(date):
             return 0
 
@@ -90,6 +91,8 @@ class CongestionTaxCalculator:
                 return 0
 
     def is_toll_free_date(self, date: datetime):
+        """Returns true if the date is a toll-free date, false otherwise."""
+
         year = date.year
         month = date.month
         day = date.day
