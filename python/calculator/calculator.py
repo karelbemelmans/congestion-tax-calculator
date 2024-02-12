@@ -78,7 +78,6 @@ class CongestionTaxCalculator:
 
         hour = date.hour
         minute = date.minute
-        print(hour, minute)
 
         match hour:
             case 6:
