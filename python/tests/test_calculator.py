@@ -1,5 +1,4 @@
 import unittest
-from datetime import datetime
 from calculator import CongestionTaxCalculator, Car, Motorbike
 
 
@@ -97,8 +96,7 @@ class TestCongestionTaxCalculator(unittest.TestCase):
 
     # Internal helper method that converts our string input to datetime objects
     def _run_test_case(self, vehicle, dates, expected):
-        result = self.CongestionTaxCalculator.get_tax(
-            vehicle,  [datetime.strptime(str, "%Y-%m-%d %H:%M:%S") for str in dates])
+        result = self.CongestionTaxCalculator.get_tax(vehicle,  dates)
         self.assertEqual(result, expected)
 
 

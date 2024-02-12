@@ -6,10 +6,16 @@ from functools import reduce
 
 class CongestionTaxCalculator:
 
+    def __init__(self):
+        pass
+
     def get_tax(self, vehicle: Vehicle, dates: list):
         """
         Returns the total toll fee for a vehicle on a list of dates.
         """
+
+        # Convert input to datetime
+        dates = [datetime.strptime(str, "%Y-%m-%d %H:%M:%S") for str in dates]
 
         # We need to sort the dates first to make sure our algorithm works correctly
         dates.sort()
