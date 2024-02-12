@@ -21,7 +21,7 @@ pytest
 ## REST server and API calls
 
 ``` language=bash
-lask --app calculator/app.py run
+flask --app calculator/app.py run
 ```
 
 Send a curl call with a payload:
