@@ -7,7 +7,9 @@ from functools import reduce
 class CongestionTaxCalculator:
 
     def get_tax(self, vehicle: Vehicle, dates: list):
-        """Returns the total toll fee for a vehicle on a list of dates."""
+        """
+        Returns the total toll fee for a vehicle on a list of dates.
+        """
 
         # We need to sort the dates first to make sure our algorithm works correctly
         dates.sort()
@@ -58,7 +60,9 @@ class CongestionTaxCalculator:
         return reduce(lambda a, b: a+b, total_fee.values())
 
     def get_toll_fee(self, vehicle: Vehicle, date: datetime, ) -> int:
-        """Returns the toll fee for a single date."""
+        """
+        Returns the toll fee for a single date.
+        """
 
         if self.is_toll_free_date(date):
             return 0
@@ -91,14 +95,12 @@ class CongestionTaxCalculator:
                 return 0
 
     def is_toll_free_date(self, date: datetime):
-        """Returns true if the date is a toll-free date, false otherwise."""
+        """
+        Returns true if the date is a toll-free date, false otherwise.
+        """
 
-        year = date.year
         month = date.month
         day = date.day
-
-        if not year == 2013:
-            return False
 
         # Saturday and Sunday
         if date.weekday() == 5 or date.weekday() == 6:
